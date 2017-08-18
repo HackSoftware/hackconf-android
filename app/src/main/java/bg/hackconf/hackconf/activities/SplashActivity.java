@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.joda.time.LocalDate;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     private static final String TAG = SplashActivity.class.getSimpleName();
     private static final String API_URL = "http://192.168.0.2:9000";
 
-    private Date firstDay = new Date(2017, 9, 29);
-    private Date secondDay = new Date(2017, 9, 30);
-    private Date thirdDay = new Date(2017, 10, 1);
+    private List<LocalDate> dates = new ArrayList<>();
 
     private static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API_URL)
@@ -56,6 +56,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dates.add(new LocalDate(2018, 2, 13));
+        dates.add(new LocalDate(2018, 2, 14));
+        dates.add(new LocalDate(2018, 2, 15));
+
         try {
             Thread.sleep(500);
         } catch (Exception ignored) {}
@@ -64,8 +68,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loadScheduleAndFinish() {
-        schedule.get(2017, 9, 29).enqueue(callback);
-        schedule.get(2017, 9, 30).enqueue(callback);
-        schedule.get(2017, 10, 1).enqueue(callback);
+        schedule.get(dates).enqueue(callback);
     }
 }
