@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="bg.hackconf.hackconf.activities.DetailsActivity">
+
+    <include android:id="@+id/details_toolbar" layout="@layout/toolbar"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/details_day"
+        android:elevation="4dp"
+        android:background="@color/colorPrimary"
+        android:layout_height="50dp"
+        app:tabTextColor="@color/lightBackground"
+        app:tabSelectedTextColor="@color/colorAccent"
+        android:layout_below="@id/details_toolbar"
+        app:tabIndicatorHeight="3dp"
+        app:tabMaxWidth="1024dp"
+        android:layout_width="match_parent">
+
+        <android.support.design.widget.TabItem
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            tools:text="29 Сеп"/>
+
+    </android.support.design.widget.TabLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/details_day"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/details_card"
+            app:cardElevation="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:id="@+id/details_left"
+            android:tint="@color/lightBackground"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_keyboard_arrow_left_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/details_right"
+            android:tint="@color/lightBackground"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"/>
+    </RelativeLayout>
+</RelativeLayout>
