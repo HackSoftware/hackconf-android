@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -22,7 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.DetailsActivity"></activity>
+        <activity android:name=".activities.DetailsActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d2e052181025fbc95b2230164a5595104ea5c6b7" />
     </application>
 
 </manifest>

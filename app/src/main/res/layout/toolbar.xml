@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:background="@color/colorPrimary"
     android:elevation="4dp"
-    android:logo="@mipmap/ic_launcher"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-    <include layout="@layout/hackconf_logo"/>
+    <!--<include layout="@layout/hackconf_logo"/>-->
 
 </android.support.v7.widget.Toolbar>

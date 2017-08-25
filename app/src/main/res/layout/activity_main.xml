@@ -13,26 +13,26 @@
         android:elevation="4dp"
         android:background="@color/colorPrimary"
         android:layout_height="50dp"
+        android:layout_below="@id/toolbar"
         app:tabTextColor="@color/lightBackground"
         app:tabSelectedTextColor="@color/colorAccent"
-        android:layout_below="@id/toolbar"
         app:tabIndicatorHeight="3dp"
         android:layout_width="match_parent">
 
         <android.support.design.widget.TabItem
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            tools:text="29 Сеп"/>
+            android:text="@string/day_one"/>
 
         <android.support.design.widget.TabItem
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            tools:text="30 Сеп"/>
+            android:text="@string/day_two"/>
 
         <android.support.design.widget.TabItem
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            tools:text="01 Окт"/>
+            android:text="@string/day_three"/>
 
     </android.support.design.widget.TabLayout>
 
@@ -40,7 +40,7 @@
         android:id="@+id/scheduleRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
+        android:scrollbars="none"
         android:clipToPadding="false"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
