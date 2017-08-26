@@ -18,17 +18,17 @@ public class Speaker {
     @SerializedName("bio")
     String bio;
 
-    @SerializedName("url")
-    String url;
+    @SerializedName("youtubeId")
+    String youtubeId;
 
     public Speaker() {}
 
-    public Speaker(long id, String firstName, String lastName, String bio, String url) {
+    public Speaker(long id, String firstName, String lastName, String bio, String youtubeId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.bio = bio;
-        this.url = url;
+        this.youtubeId = youtubeId;
     }
 
     public long getId() {
@@ -63,11 +63,11 @@ public class Speaker {
         this.bio = bio;
     }
 
-    public String getUrl() {
-        return url;
+    public String getYoutubeId() {
+        return youtubeId;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setYoutubeId(String youtubeId) {
+        this.youtubeId = youtubeId;
     }
 }

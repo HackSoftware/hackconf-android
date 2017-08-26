@@ -1,6 +1,7 @@
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="50dp"
-    android:layout_height="wrap_content"
-    android:src="@mipmap/ic_launcher"
+    android:layout_width="wrap_content"
+    android:layout_height="25dp"
+    android:layout_centerInParent="true"
+    android:src="@drawable/ic_hackconf_logo"
     android:contentDescription="@string/hackconf_logo" />

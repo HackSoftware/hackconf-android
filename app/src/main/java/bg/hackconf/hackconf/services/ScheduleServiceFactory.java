@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScheduleServiceFactory {
-    private static final String API_URL = "http://192.168.0.2:9000";
+    private static final String API_URL = "http://10.11.12.44:9000";
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())

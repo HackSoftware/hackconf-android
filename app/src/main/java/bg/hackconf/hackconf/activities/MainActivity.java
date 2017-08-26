@@ -1,6 +1,8 @@
 package bg.hackconf.hackconf.activities;
 
 import android.animation.Animator;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bg.hackconf.hackconf.R;
+import bg.hackconf.hackconf.StreamHelper;
 import bg.hackconf.hackconf.TalkAdapter;
 import bg.hackconf.hackconf.models.Talk;
 import bg.hackconf.hackconf.services.ScheduleRequest;
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar tb = findViewById(R.id.toolbar);
+        tb.setTitle("");
+//        tb.setLogo(R.drawable.ic_hackconf_logo);
         setSupportActionBar(tb);
 
         dates.add(new LocalDate(2018, 2, 13));
@@ -80,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new TalkAdapter(schedule.getResult().get(new LocalDate(2018, 2, 13)));
         scheduleRecyclerView.setAdapter(adapter);
+
+        findViewById(R.id.live_stream_button).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -96,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ScheduleResponse> call, Response<ScheduleResponse> response) {
                         schedule = response.body();
+                        changeTalks(schedule.getResult().get(dates.get(dayTabs.getSelectedTabPosition())));
                         Toast.makeText(getApplicationContext(), "Schedule updated", Toast.LENGTH_SHORT).show();
                     }
 
@@ -107,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    public void onLiveStreamClick(final View v) {
+        StreamHelper.onLiveStreamClick(this, v);
     }
 
     private void changeTalks(final List<Talk> talks) {

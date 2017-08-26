@@ -8,6 +8,23 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-    <!--<include layout="@layout/hackconf_logo"/>-->
+    <!--<include layout="@layout/hackconf_logo" />-->
+
+    <ImageView
+        android:id="@+id/live_stream_button"
+        android:onClick="onLiveStreamClick"
+        android:src="@drawable/ic_live_tv_black_24dp"
+        android:visibility="invisible"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@string/hackconf_stream"/>
+
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_hackconf_logo"
+        android:contentDescription="@string/hackconf_logo" />
 
 </android.support.v7.widget.Toolbar>

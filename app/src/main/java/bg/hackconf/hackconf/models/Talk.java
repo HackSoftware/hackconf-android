@@ -15,22 +15,18 @@ public class Talk {
     @SerializedName("description")
     String description;
 
-    @SerializedName("imageUrl")
-    String imageUrl;
-
     @SerializedName("schedule")
     TalkSchedule schedule;
 
     @SerializedName("speaker")
     Speaker speaker;
 
-    public Talk() {};
+    public Talk() {}
 
-    public Talk(long id, String title, String description, String imageUrl, TalkSchedule schedule, Speaker speaker) {
+    public Talk(long id, String title, String description, TalkSchedule schedule, Speaker speaker) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.imageUrl = imageUrl;
         this.schedule = schedule;
         this.speaker = speaker;
     }
@@ -57,14 +53,6 @@ public class Talk {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public TalkSchedule getSchedule() {

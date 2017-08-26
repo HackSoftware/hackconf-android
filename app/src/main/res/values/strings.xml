@@ -5,4 +5,7 @@
     <string name="day_one">29 SEP</string>
     <string name="day_two">30 SEP</string>
     <string name="day_three">01 OCT</string>
+
+    <string name="refresh">Refresh</string>
+    <string name="hackconf_stream">HackConf Stream</string>
 </resources>
