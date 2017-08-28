@@ -38,7 +38,6 @@
 
             <TextView
                 android:id="@+id/talk_speaker"
-                android:textStyle="italic"
                 android:layout_below="@id/talk_title"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
@@ -55,7 +54,7 @@
 
             <ImageView
                 android:id="@+id/talk_set_reminder"
-                android:src="@drawable/ic_timer_black_24dp"
+                android:src="@drawable/ic_add_alarm_black_24dp"
                 android:tint="@color/colorAccent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"

@@ -1,4 +1,4 @@
-package bg.hackconf.hackconf.services;
+package bg.hackconf.hackconf.services.schedule;
 
 import com.google.gson.annotations.SerializedName;
 

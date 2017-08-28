@@ -1,10 +1,12 @@
-package bg.hackconf.hackconf.services;
+package bg.hackconf.hackconf.services.schedule;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.LocalDate;
 
+import bg.hackconf.hackconf.services.LocalDateAdapter;
+import bg.hackconf.hackconf.services.schedule.ScheduleService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

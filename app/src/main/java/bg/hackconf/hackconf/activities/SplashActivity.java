@@ -8,9 +8,9 @@ import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 
-import bg.hackconf.hackconf.services.ScheduleRequest;
-import bg.hackconf.hackconf.services.ScheduleResponse;
-import bg.hackconf.hackconf.services.ScheduleServiceFactory;
+import bg.hackconf.hackconf.services.schedule.ScheduleRequest;
+import bg.hackconf.hackconf.services.schedule.ScheduleResponse;
+import bg.hackconf.hackconf.services.schedule.ScheduleServiceFactory;
 import io.fabric.sdk.android.Fabric;
 import org.joda.time.LocalDate;
 import org.parceler.Parcels;
@@ -18,7 +18,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import bg.hackconf.hackconf.services.ScheduleService;
+import bg.hackconf.hackconf.services.schedule.ScheduleService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -1,4 +1,4 @@
-package bg.hackconf.hackconf.services;
+package bg.hackconf.hackconf.services.schedule;
 
 import org.joda.time.LocalDate;
 import org.parceler.Parcel;

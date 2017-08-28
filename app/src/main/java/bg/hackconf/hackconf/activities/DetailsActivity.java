@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -37,6 +38,9 @@ public class DetailsActivity extends AppCompatActivity {
     private YouTubePlayerFragment ytPlayerFragment;
     private YouTubePlayer ytPlayer;
 
+    private ImageView leftArrow;
+    private ImageView rightArrow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         Parcelable extra = getIntent().getParcelableExtra("talks");
         talks = Parcels.unwrap(extra);
+        currentTalk = getIntent().getIntExtra("clicked_talk", 0);
 
         final Activity a = this;
 
@@ -59,7 +64,7 @@ public class DetailsActivity extends AppCompatActivity {
                 layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 detailsRecyclerView = findViewById(R.id.details_recycler_view);
                 detailsRecyclerView.setLayoutManager(layoutManager);
-                adapter = new TalkDetailsAdapter(talks);
+                adapter = new TalkDetailsAdapter(a, talks);
                 detailsRecyclerView.setAdapter(adapter);
                 snapHelper = new PagerSnapHelper();
                 snapHelper.attachToRecyclerView(detailsRecyclerView);
@@ -70,14 +75,15 @@ public class DetailsActivity extends AppCompatActivity {
                 detailsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        int scrolledTalk = layoutManager.findFirstVisibleItemPosition();
-                        if (currentTalk != scrolledTalk) {
+                        int scrolledTalk = layoutManager.findFirstCompletelyVisibleItemPosition();
+                        if (scrolledTalk != -1 && currentTalk != scrolledTalk) {
                             ytPlayer.pause();
                             ytPlayer.cueVideo(talks.get(scrolledTalk).getSpeaker().getYoutubeId());
                             currentTalk = scrolledTalk;
                         }
                     }
                 });
+                layoutManager.scrollToPosition(currentTalk);
             }
 
             @Override
@@ -85,6 +91,9 @@ public class DetailsActivity extends AppCompatActivity {
                 Log.e("YOUTUBE-ERROR", youTubeInitializationResult.name());
             }
         });
+
+        leftArrow = findViewById(R.id.left_arrow);
+        rightArrow = findViewById(R.id.right_arrow);
     }
 
     public void onLiveStreamClick(final View v) {

@@ -1,15 +1,11 @@
 package bg.hackconf.hackconf.activities;
 
 import android.animation.Animator;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +25,10 @@ import bg.hackconf.hackconf.R;
 import bg.hackconf.hackconf.StreamHelper;
 import bg.hackconf.hackconf.TalkAdapter;
 import bg.hackconf.hackconf.models.Talk;
-import bg.hackconf.hackconf.services.ScheduleRequest;
-import bg.hackconf.hackconf.services.ScheduleResponse;
-import bg.hackconf.hackconf.services.ScheduleService;
-import bg.hackconf.hackconf.services.ScheduleServiceFactory;
+import bg.hackconf.hackconf.services.schedule.ScheduleRequest;
+import bg.hackconf.hackconf.services.schedule.ScheduleResponse;
+import bg.hackconf.hackconf.services.schedule.ScheduleService;
+import bg.hackconf.hackconf.services.schedule.ScheduleServiceFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeTalks(final List<Talk> talks) {
-        YoYo.with(Techniques.SlideOutDown).duration(250).onEnd(new YoYo.AnimatorCallback() {
+        YoYo.with(Techniques.SlideOutDown).duration(195).onEnd(new YoYo.AnimatorCallback() {
             @Override
             public void call(Animator animator) {
-                YoYo.with(Techniques.SlideInUp).duration(250).playOn(scheduleRecyclerView);
+                YoYo.with(Techniques.SlideInUp).duration(225).playOn(scheduleRecyclerView);
                 adapter = new TalkAdapter(talks);
                 scheduleRecyclerView.setAdapter(adapter);
             }

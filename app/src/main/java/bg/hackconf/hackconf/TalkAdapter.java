@@ -70,9 +70,9 @@ public class TalkAdapter extends RecyclerView.Adapter<TalkAdapter.TalkHolder> {
         @Override
         public void onClick(View view) {
 //            YoYo.with(Techniques.TakingOff).duration(250).playOn(card);
-
             Intent intent = new Intent(view.getContext(), DetailsActivity.class);
             intent.putExtra("talks", Parcels.wrap(talks));
+            intent.putExtra("clicked_talk", getAdapterPosition());
             view.getContext().startActivity(intent);
         }
 

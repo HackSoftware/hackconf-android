@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">HackConf</string>
     <string name="hackconf_logo">HackConf Logo</string>
+    <string name="hackconf_stream">HackConf Stream</string>
 
     <string name="day_one">29 SEP</string>
     <string name="day_two">30 SEP</string>
     <string name="day_three">01 OCT</string>
 
     <string name="refresh">Refresh</string>
-    <string name="hackconf_stream">HackConf Stream</string>
+
+    <string name="feedback_icon">Feedback icon</string>
+    <string name="leave_feedback">Leave Feedback</string>
 </resources>
