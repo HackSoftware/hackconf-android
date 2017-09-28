@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Feedback {
     @SerializedName("talkId")
-    int talkId;
+    long talkId;
 
     @SerializedName("feedback")
     String feedback;
 
-    public Feedback(int talkId, String feedback) {
+    public Feedback(long talkId, String feedback) {
         this.talkId = talkId;
         this.feedback = feedback;
     }

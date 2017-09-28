@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.answers.Answers;
-
 import bg.hackconf.hackconf.services.schedule.ScheduleRequest;
 import bg.hackconf.hackconf.services.schedule.ScheduleResponse;
 import bg.hackconf.hackconf.services.schedule.ScheduleServiceFactory;
-import io.fabric.sdk.android.Fabric;
 import org.joda.time.LocalDate;
 import org.parceler.Parcels;
 
@@ -51,11 +48,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fabric.with(this, new Answers());
-
-        dates.add(new LocalDate(2018, 2, 13));
-        dates.add(new LocalDate(2018, 2, 14));
-        dates.add(new LocalDate(2018, 2, 15));
+        dates.add(new LocalDate(2017, 9, 30));
+        dates.add(new LocalDate(2017, 9, 30));
+        dates.add(new LocalDate(2017, 10, 1));
 
         loadScheduleAndFinish();
     }

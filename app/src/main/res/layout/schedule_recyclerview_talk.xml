@@ -22,7 +22,6 @@
         android:layout_marginBottom="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:contentPadding="16dp"
         app:cardElevation="2dp">
 
         <RelativeLayout
@@ -31,6 +30,9 @@
 
             <TextView
                 android:id="@+id/talk_title"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,6 +40,8 @@
 
             <TextView
                 android:id="@+id/talk_speaker"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:layout_below="@id/talk_title"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
@@ -46,6 +50,9 @@
 
             <TextView
                 android:id="@+id/talk_time_slot"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
                 android:layout_below="@id/talk_speaker"
                 android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
@@ -58,9 +65,9 @@
                 android:tint="@color/colorAccent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:padding="4dp"
-                android:layout_width="32dp"
-                android:layout_height="32dp" />
+                android:scaleType="center"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
 
         </RelativeLayout>
 

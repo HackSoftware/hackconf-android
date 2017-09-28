@@ -8,11 +8,8 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-    <!--<include layout="@layout/hackconf_logo" />-->
-
     <ImageView
         android:id="@+id/live_stream_button"
-        android:onClick="onLiveStreamClick"
         android:src="@drawable/ic_live_tv_black_24dp"
         android:visibility="invisible"
         android:layout_width="24dp"

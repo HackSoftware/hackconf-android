@@ -5,15 +5,17 @@
     android:layout_height="match_parent">
 
     <EditText
+        android:id="@+id/feedback_details"
         android:textColor="@color/colorText"
         android:textCursorDrawable="@drawable/orange_cursor"
-        android:backgroundTint="@color/lightBackground"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:background="@color/gray100"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:scrollbars="vertical"
         android:lines="8"
         android:gravity="top|start"
+        android:maxLength="512"
         android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

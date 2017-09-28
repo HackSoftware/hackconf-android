@@ -95,8 +95,4 @@ public class DetailsActivity extends AppCompatActivity {
         leftArrow = findViewById(R.id.left_arrow);
         rightArrow = findViewById(R.id.right_arrow);
     }
-
-    public void onLiveStreamClick(final View v) {
-        StreamHelper.onLiveStreamClick(this, v);
-    }
 }

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
@@ -18,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+configurations {
+    all*.exclude group: 'com.google.firebase', module: 'firebase-core'
+    all*.exclude group: 'com.google.firebase', module: 'firebase-iid'
+    all*.exclude group: 'com.google.android.gms', module: 'play-services-ads'
 }
 
 dependencies {
@@ -43,13 +48,6 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     annotationProcessor 'org.parceler:parceler:1.1.9'
-
-    compile('io.fabric.sdk.android:fabric:1.3.10@aar') {
-        transitive = true;
-    }
-    compile('com.crashlytics.sdk.android:answers:1.3.13@aar') {
-        transitive = true;
-    }
 
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.3@aar'

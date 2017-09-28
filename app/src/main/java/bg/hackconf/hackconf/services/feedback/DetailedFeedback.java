@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DetailedFeedback {
     @SerializedName("talkId")
-    int talkId;
+    long talkId;
 
     @SerializedName("feedback")
     String feedback;
@@ -12,7 +12,7 @@ public class DetailedFeedback {
     @SerializedName("details")
     String details;
 
-    public DetailedFeedback(int talkId, String feedback, String details) {
+    public DetailedFeedback(long talkId, String feedback, String details) {
         this.talkId = talkId;
         this.feedback = feedback;
         this.details = details;
