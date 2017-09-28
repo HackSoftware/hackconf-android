@@ -9,8 +9,12 @@ public class Feedback {
     @SerializedName("feedback")
     String feedback;
 
-    public Feedback(long talkId, String feedback) {
+    @SerializedName("deviceId")
+    String deviceId;
+
+    public Feedback(long talkId, String feedback, String deviceId) {
         this.talkId = talkId;
         this.feedback = feedback;
+        this.deviceId = deviceId;
     }
 }

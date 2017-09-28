@@ -1,6 +1,7 @@
 package bg.hackconf.hackconf.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import bg.hackconf.hackconf.services.schedule.ScheduleService;
 import retrofit2.Call;
@@ -51,6 +53,11 @@ public class SplashActivity extends AppCompatActivity {
         dates.add(new LocalDate(2017, 9, 30));
         dates.add(new LocalDate(2017, 9, 30));
         dates.add(new LocalDate(2017, 10, 1));
+
+        SharedPreferences prefs = getSharedPreferences("hackconf_2017", 0);
+        if (!prefs.contains("deviceId")) {
+            prefs.edit().putString("deviceId", UUID.randomUUID().toString()).apply();
+        }
 
         loadScheduleAndFinish();
     }

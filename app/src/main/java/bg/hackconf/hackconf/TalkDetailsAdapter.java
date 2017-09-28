@@ -8,13 +8,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +33,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.UUID;
 
 import bg.hackconf.hackconf.models.Talk;
 import bg.hackconf.hackconf.services.feedback.DetailedFeedback;
@@ -72,6 +81,8 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
         private final Context context;
         private View parent;
 
+        private String deviceId;
+
         private TextView title;
         private TextView slot;
         private TextView speaker;
@@ -89,6 +100,8 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
         private ImageView iconGood;
         private ImageView iconGreat;
 
+        private ImageView sending;
+
         private Button sendFeedback;
 
         private RelativeLayout thankYou;
@@ -97,16 +110,16 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
 
         private long currentTalk;
 
-        private static int currentFeedback = R.id.layout_feedback_satisfied;
-
         private SharedPreferences getPrefs() {
-            return context.getSharedPreferences("hackconf2017_feedback", 0);
+            return context.getSharedPreferences("hackconf_2017", 0);
         }
 
         TalkDetailsHolder(final Context context, View itemView) {
             super(itemView);
             this.context = context;
             parent = itemView;
+
+            deviceId = getPrefs().getString("deviceId", UUID.randomUUID().toString());
 
             thankYou = parent.findViewById(R.id.feedback_thank_you);
 
@@ -127,28 +140,19 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
             iconGood = parent.findViewById(R.id.ic_feedback_satisfied);
             iconGreat = parent.findViewById(R.id.ic_feedback_very_satisfied);
 
+            sending = parent.findViewById(R.id.ic_sending);
+
             sendFeedback = parent.findViewById(R.id.btn_send_feedback);
             sendFeedback.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final int lightBg = context.getResources().getColor(R.color.colorAccent);
+                    final int lightBg = ContextCompat.getColor(context, R.color.colorAccent);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
                     final AlertDialog dialog = builder.setCancelable(false)
-                            .setTitle("Would you like to go into details?")
-                            .setPositiveButton("Send detailed", null)
-                            .setNeutralButton("Skip and send", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    markFeedback();
-                                    feedbackService.create(new Feedback(currentTalk, getFeedbackFromLayout(currentFeedback))).enqueue(new Callback<Integer>() {
-                                        @Override
-                                        public void onResponse(Call<Integer> call, Response<Integer> response) {}
-                                        @Override
-                                        public void onFailure(Call<Integer> call, Throwable t) {}
-                                    });
-                                }
-                            })
+                            .setTitle("Share your thoughts")
+                            .setPositiveButton("Send", null)
+                            .setNegativeButton("Cancel", null)
                             .setView(R.layout.feedback_details)
                             .create();
                     dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -158,13 +162,22 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
                             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    String currentTalkId = Long.toString(currentTalk);
                                     TextView feedbackText = dialog.findViewById(R.id.feedback_details);
+                                    String feedback = getPrefs().getString(currentTalkId, "okay");
                                     if (feedbackText.getText().toString().length() < 16) {
                                         Toast.makeText(context, "Feedback details too short", Toast.LENGTH_SHORT).show();
                                     } else {
                                         dialog.dismiss();
-                                        markFeedback();
-                                        feedbackService.createDetailed(new DetailedFeedback(currentTalk, getFeedbackFromLayout(currentFeedback), feedbackText.getText().toString())).enqueue(new Callback<Integer>() {
+                                        getPrefs().edit().putBoolean(currentTalkId + "_details", true).apply();
+                                        YoYo.with(Techniques.FadeOutDown).duration(195).onEnd(new YoYo.AnimatorCallback() {
+                                            @Override
+                                            public void call(Animator animator) {
+                                                thankYou.setVisibility(View.VISIBLE);
+                                                YoYo.with(Techniques.FadeInUp).duration(225).playOn(thankYou);
+                                            }
+                                        }).playOn(sendFeedback);
+                                        feedbackService.createDetailed(new DetailedFeedback(currentTalk, feedback, feedbackText.getText().toString(), deviceId)).enqueue(new Callback<Integer>() {
                                             @Override
                                             public void onResponse(Call<Integer> call, Response<Integer> response) {}
                                             @Override
@@ -173,73 +186,60 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
                                     }
                                 }
                             });
-                            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(lightBg);
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(lightBg);
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.dismiss();
+                                }
+                            });
                         }
                     });
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                     dialog.show();
                 }
             });
-
             delayText = parent.findViewById(R.id.delay_text);
-        }
-
-        void markFeedback() {
-            terrible.setOnClickListener(null);
-            bad.setOnClickListener(null);
-            okay.setOnClickListener(null);
-            good.setOnClickListener(null);
-            great.setOnClickListener(null);
-
-            ObjectAnimator clickedFade = ObjectAnimator
-                    .ofObject(getIconFromLayout(currentFeedback), "colorFilter", new ArgbEvaluator(), COLOR_LIGHT_BG, COLOR_TEXT);
-            clickedFade.setDuration(225);
-            clickedFade.start();
-
-            getPrefs().edit().putString(Long.toString(currentTalk), getFeedbackFromLayout(currentFeedback)).apply();
-            YoYo.with(Techniques.FadeOutDown).duration(195).onEnd(new YoYo.AnimatorCallback() {
-                @Override
-                public void call(Animator animator) {
-                    thankYou.setVisibility(View.VISIBLE);
-                    YoYo.with(Techniques.FadeInUp).duration(225).playOn(thankYou);
-                }
-            }).playOn(sendFeedback);
         }
 
         void bindTalk(Talk talk) {
             title.setText(talk.getTitle());
             slot.setText(talk.getSchedule().getStartTime() + " - " + talk.getSchedule().getEndTime());
             String separator = " ";
-            if (talk.getSpeaker().getFirstName().contains(" ")) {
-                separator = " & ";
-            }
             speaker.setText(talk.getSpeaker().getFirstName() + separator + talk.getSpeaker().getLastName());
             speakerBio.setText(talk.getSpeaker().getBio());
             currentTalk = talk.getId();
 
+            ImageView selectedIcon = null;
+
+            iconTerrible.setColorFilter(ContextCompat.getColor(context, R.color.gray400));
+            iconBad.setColorFilter(ContextCompat.getColor(context, R.color.gray400));
+            iconGood.setColorFilter(ContextCompat.getColor(context, R.color.gray400));
+            iconGreat.setColorFilter(ContextCompat.getColor(context, R.color.gray400));
+            iconOkay.setColorFilter(ContextCompat.getColor(context, R.color.gray400));
+
+            sendFeedback.setEnabled(false);
             String currentTalkId = Long.toString(currentTalk);
             if (getPrefs().contains(currentTalkId)) {
-                terrible.setOnClickListener(null);
-                bad.setOnClickListener(null);
-                okay.setOnClickListener(null);
-                good.setOnClickListener(null);
-                great.setOnClickListener(null);
+                if (getPrefs().contains(currentTalkId+"_details")) {
+                    thankYou.setVisibility(View.VISIBLE);
+                    sendFeedback.setVisibility(View.INVISIBLE);
+                } else {
+                    sendFeedback.setEnabled(true);
+                }
                 ImageView icon = getIconFromFeedback(getPrefs().getString(currentTalkId, ""));
                 if (icon != null) {
-                    icon.setColorFilter(
-                            context.getResources().getColor(R.color.gray600)
-                    );
+                    icon.setColorFilter(ContextCompat.getColor(context, R.color.lightBackground));
+                    selectedIcon = icon;
                 }
-                thankYou.setVisibility(View.VISIBLE);
-                sendFeedback.setVisibility(View.INVISIBLE);
-            } else {
-                iconGood.setColorFilter(context.getResources().getColor(R.color.lightBackground));
-                FeedbackOnClickListener focl = new FeedbackOnClickListener(iconGood);
-                terrible.setOnClickListener(focl);
-                bad.setOnClickListener(focl);
-                okay.setOnClickListener(focl);
-                good.setOnClickListener(focl);
-                great.setOnClickListener(focl);
             }
+
+            FeedbackOnClickListener focl = new FeedbackOnClickListener(selectedIcon);
+            terrible.setOnClickListener(focl);
+            bad.setOnClickListener(focl);
+            okay.setOnClickListener(focl);
+            good.setOnClickListener(focl);
+            great.setOnClickListener(focl);
 
             if (talk.getSchedule().isCanceled()) {
                 delayText.setVisibility(View.VISIBLE);
@@ -250,74 +250,72 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
             }
         }
 
-        private static class FeedbackOnClickListener implements View.OnClickListener {
+        private class FeedbackOnClickListener implements View.OnClickListener {
             private ImageView currentIcon;
+            private Runnable feedbackRunnable;
+            private Handler feedbackHandler = new Handler();
+            private boolean isBusy = false;
 
-            public FeedbackOnClickListener(ImageView defaultIcon) {
-                currentIcon = defaultIcon;
+            public FeedbackOnClickListener(ImageView currentIcon) {
+                this.currentIcon = currentIcon;
             }
 
             @Override
-            public void onClick(View view) {
-                int clickedFeedback = view.getId();
+            public void onClick(View clicked) {
+                sendFeedback.setEnabled(true);
+                final String feedback = getFeedbackFromLayout(clicked);
+                ImageView clickedIcon = getIconFromFeedback(feedback);
 
-                if (clickedFeedback != currentFeedback) {
-                    ImageView clickedIcon = view.findViewById(getIconIdFromLayout(clickedFeedback));
+                if (currentIcon == null || clickedIcon.getId() != currentIcon.getId()) {
+                    feedbackHandler.removeCallbacks(feedbackRunnable);
+                    if (!isBusy) {
+                        RotateAnimation rotateAnimation = new RotateAnimation(0, 359f,
+                                Animation.RELATIVE_TO_SELF, 0.5f,
+                                Animation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setInterpolator(new LinearInterpolator());
+                        rotateAnimation.setDuration(1000);
+                        rotateAnimation.setRepeatCount(Animation.INFINITE);
+                        sending.startAnimation(rotateAnimation);
+                        YoYo.with(Techniques.FadeIn).duration(195).playOn(sending);
+                    }
+                    isBusy = true;
+
                     ObjectAnimator clickedFade = ObjectAnimator
                             .ofObject(clickedIcon, "colorFilter", new ArgbEvaluator(), COLOR_GRAY_400, COLOR_LIGHT_BG);
                     clickedFade.setDuration(225);
                     clickedFade.start();
 
+                    feedbackRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            feedbackService.create(new Feedback(currentTalk, feedback, deviceId)).enqueue(new Callback<Integer>() {
+                                @Override
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    YoYo.with(Techniques.FadeOut).duration(195).onEnd(new YoYo.AnimatorCallback() {
+                                        @Override
+                                        public void call(Animator animator) {
+                                            isBusy = false;
+                                        }
+                                    }).playOn(sending);
+                                }
+                                @Override
+                                public void onFailure(Call<Integer> call, Throwable t) {}
+                            });
+                        }
+                    };
+
+                    feedbackHandler.postDelayed(feedbackRunnable, 1000);
+                }
+                if (currentIcon != null && clickedIcon.getId() != currentIcon.getId()) {
                     ObjectAnimator currentFade = ObjectAnimator
                             .ofObject(currentIcon, "colorFilter", new ArgbEvaluator(), COLOR_LIGHT_BG, COLOR_GRAY_400);
                     currentFade.setDuration(195);
                     currentFade.start();
-
-                    currentFeedback = clickedFeedback;
-                    currentIcon = clickedIcon;
-                    YoYo.with(Techniques.Pulse).duration(225).playOn(view);
                 }
+                currentIcon = clickedIcon;
+                getPrefs().edit().putString(Long.toString(currentTalk), feedback).apply();
+                YoYo.with(Techniques.Pulse).duration(225).playOn(currentIcon);
             }
-
-            private int getIconIdFromLayout(int layoutId) {
-                switch (layoutId) {
-                    case R.id.layout_feedback_very_dissatisfied:
-                        return R.id.ic_feedback_very_dissatisfied;
-
-                    case R.id.layout_feedback_dissatisfied:
-                        return R.id.ic_feedback_dissatisfied;
-
-                    case R.id.layout_feedback_neutral:
-                        return R.id.ic_feedback_neutral;
-
-                    case R.id.layout_feedback_satisfied:
-                        return R.id.ic_feedback_satisfied;
-
-                    case R.id.layout_feedback_very_satisfied:
-                        return R.id.ic_feedback_very_satisfied;
-                }
-                return -1;
-            }
-        }
-
-        private String getFeedbackFromLayout(int layoutId) {
-            switch (layoutId) {
-                case R.id.layout_feedback_very_dissatisfied:
-                    return "terrible";
-
-                case R.id.layout_feedback_dissatisfied:
-                    return "bad";
-
-                case R.id.layout_feedback_neutral:
-                    return "okay";
-
-                case R.id.layout_feedback_satisfied:
-                    return "good";
-
-                case R.id.layout_feedback_very_satisfied:
-                    return "great";
-            }
-            return "";
         }
 
         private ImageView getIconFromFeedback(String feedback) {
@@ -336,22 +334,18 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
             return null;
         }
 
-        private ImageView getIconFromLayout(int layoutId) {
-            switch (layoutId) {
+        private String getFeedbackFromLayout(View layout) {
+            switch (layout.getId()) {
                 case R.id.layout_feedback_very_dissatisfied:
-                    return iconTerrible;
-
+                    return "terrible";
                 case R.id.layout_feedback_dissatisfied:
-                    return iconBad;
-
+                    return "bad";
                 case R.id.layout_feedback_neutral:
-                    return iconOkay;
-
+                    return "okay";
                 case R.id.layout_feedback_satisfied:
-                    return iconGood;
-
+                    return "good";
                 case R.id.layout_feedback_very_satisfied:
-                    return iconGreat;
+                    return "great";
             }
             return null;
         }

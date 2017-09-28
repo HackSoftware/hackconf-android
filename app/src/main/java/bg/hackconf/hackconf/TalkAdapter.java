@@ -101,18 +101,13 @@ public class TalkAdapter extends RecyclerView.Adapter<TalkAdapter.TalkHolder> {
                     } else {
                         timeline.setMarker(ContextCompat.getDrawable(parent.getContext(), R.drawable.marker_inactive));
                     }
-                } else {
-                    timeline.setMarker(ContextCompat.getDrawable(parent.getContext(), R.drawable.marker_inactive));
                 }
-            } else {
+            } else if (startDate.isBefore(today)) {
                 timeline.setMarker(ContextCompat.getDrawable(parent.getContext(), R.drawable.marker_inactive));
             }
 
             title.setText(talk.getTitle());
             String separator = " ";
-            if (talk.getSpeaker().getFirstName().contains(" ")) {
-                separator = " & ";
-            }
             speaker.setText(talk.getSpeaker().getFirstName() + separator + talk.getSpeaker().getLastName());
             timeSlot.setText(talk.getSchedule().getStartTime() + " - " + talk.getSchedule().getEndTime());
 
