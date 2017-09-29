@@ -110,6 +110,8 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
 
         private long currentTalk;
 
+        private Toast toast;
+
         private SharedPreferences getPrefs() {
             return context.getSharedPreferences("hackconf_2017", 0);
         }
@@ -143,62 +145,6 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
             sending = parent.findViewById(R.id.ic_sending);
 
             sendFeedback = parent.findViewById(R.id.btn_send_feedback);
-            sendFeedback.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final int lightBg = ContextCompat.getColor(context, R.color.colorAccent);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
-                    final AlertDialog dialog = builder.setCancelable(false)
-                            .setTitle("Share your thoughts")
-                            .setPositiveButton("Send", null)
-                            .setNegativeButton("Cancel", null)
-                            .setView(R.layout.feedback_details)
-                            .create();
-                    dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface dialogInterface) {
-                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(lightBg);
-                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String currentTalkId = Long.toString(currentTalk);
-                                    TextView feedbackText = dialog.findViewById(R.id.feedback_details);
-                                    String feedback = getPrefs().getString(currentTalkId, "okay");
-                                    if (feedbackText.getText().toString().length() < 16) {
-                                        Toast.makeText(context, "Feedback details too short", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        dialog.dismiss();
-                                        getPrefs().edit().putBoolean(currentTalkId + "_details", true).apply();
-                                        YoYo.with(Techniques.FadeOutDown).duration(195).onEnd(new YoYo.AnimatorCallback() {
-                                            @Override
-                                            public void call(Animator animator) {
-                                                thankYou.setVisibility(View.VISIBLE);
-                                                YoYo.with(Techniques.FadeInUp).duration(225).playOn(thankYou);
-                                            }
-                                        }).playOn(sendFeedback);
-                                        feedbackService.createDetailed(new DetailedFeedback(currentTalk, feedback, feedbackText.getText().toString(), deviceId)).enqueue(new Callback<Integer>() {
-                                            @Override
-                                            public void onResponse(Call<Integer> call, Response<Integer> response) {}
-                                            @Override
-                                            public void onFailure(Call<Integer> call, Throwable t) {}
-                                        });
-                                    }
-                                }
-                            });
-                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(lightBg);
-                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                    dialog.show();
-                }
-            });
             delayText = parent.findViewById(R.id.delay_text);
         }
 
@@ -224,7 +170,69 @@ public class TalkDetailsAdapter extends RecyclerView.Adapter<TalkDetailsAdapter.
                 if (getPrefs().contains(currentTalkId+"_details")) {
                     thankYou.setVisibility(View.VISIBLE);
                     sendFeedback.setVisibility(View.INVISIBLE);
+                    sendFeedback.setOnClickListener(null);
                 } else {
+                    sendFeedback.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final int lightBg = ContextCompat.getColor(context, R.color.colorAccent);
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
+                            final AlertDialog dialog = builder.setCancelable(false)
+                                    .setTitle("Share your thoughts")
+                                    .setPositiveButton("Send", null)
+                                    .setNegativeButton("Cancel", null)
+                                    .setView(R.layout.feedback_details)
+                                    .create();
+                            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                @Override
+                                public void onShow(DialogInterface dialogInterface) {
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(lightBg);
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            String currentTalkId = Long.toString(currentTalk);
+                                            TextView feedbackText = dialog.findViewById(R.id.feedback_details);
+                                            String feedback = getPrefs().getString(currentTalkId, "okay");
+                                            if (feedbackText.getText().toString().length() < 16) {
+                                                if (toast != null) {
+                                                    toast.cancel();
+                                                }
+                                                toast = Toast.makeText(context, "Feedback details too short", Toast.LENGTH_SHORT);
+                                                toast.show();
+                                            } else {
+                                                dialog.dismiss();
+                                                getPrefs().edit().putBoolean(currentTalkId + "_details", true).apply();
+                                                YoYo.with(Techniques.FadeOutDown).duration(195).onEnd(new YoYo.AnimatorCallback() {
+                                                    @Override
+                                                    public void call(Animator animator) {
+                                                        thankYou.setVisibility(View.VISIBLE);
+                                                        sendFeedback.setOnClickListener(null);
+                                                        YoYo.with(Techniques.FadeInUp).duration(225).playOn(thankYou);
+                                                    }
+                                                }).playOn(sendFeedback);
+                                                feedbackService.createDetailed(new DetailedFeedback(currentTalk, feedback, feedbackText.getText().toString(), deviceId)).enqueue(new Callback<Integer>() {
+                                                    @Override
+                                                    public void onResponse(Call<Integer> call, Response<Integer> response) {}
+                                                    @Override
+                                                    public void onFailure(Call<Integer> call, Throwable t) {}
+                                                });
+                                            }
+                                        }
+                                    });
+                                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(lightBg);
+                                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+                            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                            dialog.show();
+                        }
+                    });
                     sendFeedback.setEnabled(true);
                 }
                 ImageView icon = getIconFromFeedback(getPrefs().getString(currentTalkId, ""));
