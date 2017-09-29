@@ -115,9 +115,9 @@ public class TalkAdapter extends RecyclerView.Adapter<TalkAdapter.TalkHolder> {
                 @Override
                 public void onClick(View view) {
                     Calendar start = Calendar.getInstance();
-                    start.set(startDate.getYear(), startDate.getMonthOfYear(), startDate.getDayOfMonth(), startTime.getHourOfDay(), startTime.getMinuteOfHour());
+                    start.set(startDate.getYear(), startDate.getMonthOfYear() - 1, startDate.getDayOfMonth(), startTime.getHourOfDay(), startTime.getMinuteOfHour());
                     Calendar end = Calendar.getInstance();
-                    end.set(endDate.getYear(), endDate.getMonthOfYear(), endDate.getDayOfMonth(), endTime.getHourOfDay(), endTime.getMinuteOfHour());
+                    end.set(endDate.getYear(), endDate.getMonthOfYear() - 1, endDate.getDayOfMonth(), endTime.getHourOfDay(), endTime.getMinuteOfHour());
                     Intent intent = new Intent(Intent.ACTION_EDIT);
                     intent.setType("vnd.android.cursor.item/event");
                     intent.putExtra("allDay", false);
